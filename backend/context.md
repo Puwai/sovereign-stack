@@ -1,41 +1,41 @@
-# Backend Context
+# Context: Backend
 
 ## Purpose
-This directory contains all backend services, APIs, and server-side logic for the OurMoney.Africa Sovereign Stack.
+This folder contains the Django backend for OurMoney.Africa, implementing the core financial cockpit functionality with a clean, well-documented architecture.
 
 ## Responsibilities
-- Implement business logic
-- Handle data processing and storage
-- Provide APIs for frontend consumption
-- Manage authentication and authorization
-- Handle integration with external services
+- Handle authentication and authorization
+- Manage multi-tenancy
+- Provide REST APIs for frontend consumption
+- Implement business logic for financial operations
+- Ensure data persistence and integrity
 
 ## Key Components / Structure
-- API endpoints
-- Database models and migrations
-- Business logic services
-- Authentication modules
-- External service integrations
+- `config/`: Django configuration (settings, URLs, WSGI)
+- `apps/`: Modular Django apps (to be created as needed)
+- `requirements.txt`: Python dependencies
 
 ## Interfaces
-- Exposes RESTful APIs for frontend consumption
-- Connects to database systems
-- Integrates with third-party services (payment providers, etc.)
+- REST APIs consumed by the frontend
+- Database interface for data persistence
+- Authentication system for user management
 
 ## Dependencies
-- Database systems (to be determined)
-- Authentication libraries
-- External API clients
+- Python 3.11+
+- Django 5.x
+- Django REST Framework
+- PostgreSQL (for production)
 
 ## Invariants
-- All APIs must be properly documented
-- Security best practices must be followed
-- All data must be validated before processing
+- All API endpoints must be documented with OpenAPI
+- All models must have proper validation
+- All code must pass mypy type checking
+- All functionality must have unit tests
 
 ## Testing Strategy
-- Unit tests for business logic
+- Unit tests for models and serializers
 - Integration tests for API endpoints
-- End-to-end tests for critical user flows
+- End-to-end tests for critical flows
 
 ## ADR Links
-- ADR-001: Backend Technology Stack
+- [ADR-0001: Architecture Baseline & Rebuild Principles](../adr/2024-06-04-architecture-baseline-and-rebuild-principles.md)
