@@ -17,16 +17,19 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    'django_tenants',  # Must be first
+    'apps.accounts',   # Our custom accounts app
+    'apps.health',     # Our health check app
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Add our apps here as we create them
 ]
 
 MIDDLEWARE = [
+    'django_tenants.middleware.main.TenantMainMiddleware',  # Must be first
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,13 +59,55 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Add apps directory to Python path
+import sys
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR / 'apps'))
+
+# Multi-tenancy settings
+TENANT_MODEL = "accounts.Organization"  # app.Model
+TENANT_DOMAIN_MODEL = "accounts.Domain"  # app.Model
+
+# Tenant apps
+TENANT_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'apps.accounts',
+    'apps.health',
+]
+
+SHARED_APPS = [
+    'django_tenants',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'apps.accounts',
+    'apps.health',
+]
+
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django_tenants.postgresql_backend',
+        'NAME': 'ourmoney',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+DATABASE_ROUTERS = (
+    'django_tenants.routers.TenantSyncRouter',
+)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -91,3 +136,6 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom user model
+AUTH_USER_MODEL = 'accounts.User'
